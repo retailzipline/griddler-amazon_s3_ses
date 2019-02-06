@@ -1,5 +1,5 @@
 module Griddler
-  module AmazonSES
+  module AmazonS3SES
     class Middleware
       def initialize(app)
         @app = app

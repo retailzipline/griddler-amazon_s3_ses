@@ -1,7 +1,7 @@
 require 'rails/version'
 
 module Griddler
-  module AmazonSES
+  module AmazonS3SES
     class Railtie < Rails::Railtie
       if Rails::VERSION::MAJOR < 5
         middleware = ActionDispatch::ParamsParser
@@ -9,8 +9,8 @@ module Griddler
         middleware = Rack::Head
       end
 
-      initializer "griddler_ses.configure_rails_initialization" do |app|
-        Rails.application.middleware.insert_before middleware, Griddler::AmazonSES::Middleware
+      initializer "griddler_s3_ses.configure_rails_initialization" do |app|
+        Rails.application.middleware.insert_before middleware, Griddler::AmazonS3SES::Middleware
       end
     end
   end
