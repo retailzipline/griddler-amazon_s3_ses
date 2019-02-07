@@ -87,7 +87,7 @@ module Griddler
       end
 
       def text_part
-        force_body_to_utf_8_string(multipart? ? message.text_part.body : message.body)
+        force_body_to_utf_8_string(multipart? ? message.text_part.try(:body) : message.try(:body))
       end
 
       def html_part
