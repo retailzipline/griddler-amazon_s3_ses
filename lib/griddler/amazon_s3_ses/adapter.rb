@@ -27,6 +27,8 @@ module Griddler
           {}
         when :Notification
           ensure_valid_notification_type!
+          return {} if email_json['mail']['commonHeaders'].empty? # some test SNS notifications are like this
+
           sns_json.merge(
             to: recipients,
             from: sender,
