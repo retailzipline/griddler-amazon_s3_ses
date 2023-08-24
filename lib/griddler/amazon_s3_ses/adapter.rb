@@ -137,7 +137,11 @@ module Griddler
 
       def confirm_sns_subscription_request
         confirmation_endpoint = URI.parse(sns_json['SubscribeURL'])
-        Net::HTTP.get confirmation_endpoint
+        begin
+          Net::HTTP.get URI.encode(confirmation_endpoint)
+        rescue
+          Rails.logger.error "Error confirming subscription #{confirmation_endpoint} #{$!.inspect}"
+        end
       end
 
       def s3
