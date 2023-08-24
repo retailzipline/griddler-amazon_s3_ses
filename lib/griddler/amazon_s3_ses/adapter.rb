@@ -27,6 +27,8 @@ module Griddler
           {}
         when :Notification
           ensure_valid_notification_type!
+          return {} if email_json['mail']['commonHeaders'].blank? # some test SNS notifications are like this
+
           sns_json.merge(
             to: recipients,
             from: sender,
@@ -112,19 +114,23 @@ module Griddler
         message.attachments.map do |attachment|
           ActionDispatch::Http::UploadedFile.new({
             type: attachment.mime_type,
-            filename: attachment.filename,
+            filename: filename_for(attachment),
             tempfile: tempfile_for_attachment(attachment)
           })
         end
       end
 
       def tempfile_for_attachment(attachment)
-        filename = attachment.filename.gsub(/\/|\\/, '_')
+        filename = filename_for(attachment).gsub(/\/|\\/, '_')
         tempfile = Tempfile.new(filename, Dir::tmpdir, encoding: 'ascii-8bit')
         content = attachment.body.decoded
         tempfile.write(content)
         tempfile.rewind
         tempfile
+      end
+
+      def filename_for(attachment)
+        attachment.inline? ? attachment.cid : attachment.filename
       end
 
       def ensure_valid_notification_type!
@@ -134,6 +140,8 @@ module Griddler
       def confirm_sns_subscription_request
         confirmation_endpoint = URI.parse(sns_json['SubscribeURL'])
         Net::HTTP.get confirmation_endpoint
+      rescue StandardError
+        Rails.logger.error "Error confirming subscription #{confirmation_endpoint} #{$!.inspect}"
       end
 
       def s3
