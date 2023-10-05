@@ -101,7 +101,7 @@ module Griddler
         # A frozen string errors out with the .force_encoding method.
         body_string = message_body.present? ? message_body.to_s : ""
 
-        body_string.force_encoding(Encoding::UTF_8).encode("UTF-8", invalid: :replace, replace: "")
+        body_string.force_encoding(Encoding::UTF_8).scrub
       end
 
       def raw_headers
