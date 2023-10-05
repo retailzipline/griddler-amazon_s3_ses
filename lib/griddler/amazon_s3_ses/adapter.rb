@@ -98,10 +98,10 @@ module Griddler
 
       def force_body_to_utf_8_string(message_body)
         # Fallback to an empty string literal to ensure we don't have nil.to_s which returns a frozen string.
-        # A forzen string errors out with the .force_encoding method.
+        # A frozen string errors out with the .force_encoding method.
         body_string = message_body.present? ? message_body.to_s : ""
 
-        body_string.force_encoding(Encoding::UTF_8)
+        body_string.force_encoding(Encoding::UTF_8).encode("UTF-8", invalid: :replace, replace: "")
       end
 
       def raw_headers
