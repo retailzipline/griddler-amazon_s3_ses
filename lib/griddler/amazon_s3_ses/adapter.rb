@@ -1,6 +1,7 @@
 require 'mail'
 require 'net/http'
 require 'aws-sdk-s3'
+require 'sanitize'
 
 module Griddler
   module AmazonS3SES
@@ -89,11 +90,11 @@ module Griddler
       end
 
       def text_part
-        force_body_to_utf_8_string(multipart? ? message.text_part.try(:body) : message.try(:body))
+        force_body_to_utf_8_string(multipart? ? message.text_part.try(:body) : Sanitize.clean(message.try(:body)))
       end
 
       def html_part
-        multipart? ? force_body_to_utf_8_string(message.html_part.try(:body)) : nil
+        force_body_to_utf_8_string(multipart? ? message.html_part.try(:body) : message.try(:body))
       end
 
       def force_body_to_utf_8_string(message_body)
