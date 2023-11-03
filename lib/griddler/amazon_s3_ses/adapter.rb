@@ -90,7 +90,12 @@ module Griddler
       end
 
       def text_part
-        force_body_to_utf_8_string(multipart? ? message.text_part.try(:body) : Sanitize.clean(message.try(:body)))
+        text = multipart? ? message.text_part.try(:body) : sanitized_message_body
+        force_body_to_utf_8_string(text)
+      end
+
+      def sanitized_message_body
+        Sanitize.clean(message.try(:body)).gsub(/\r|\n|[ ]{3,}/, '')
       end
 
       def html_part
