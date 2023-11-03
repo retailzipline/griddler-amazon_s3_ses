@@ -72,7 +72,7 @@ describe Griddler::AmazonS3SES::Adapter do
     it 'should return simplified string for text/html body' do
       message = Mail.read_from_string(mail_content_complex_text)
       allow_any_instance_of(Griddler::AmazonS3SES::Adapter).to receive(:message).and_return(message)
-      expected_string = "Hey User,You've received a response! Let's not leave the customer waiting for too long.Reach out to them ASAP!Message&nbsp;[name]&nbsp;ContactMessageToday 3:26 PMYour customer just responded!Campaign: The changeMessage: \"Stop\"Click here to Reply!"
+      expected_string = "Hey User,You've received a response! Let's not leave the customer waiting for too long. Reach out to them ASAP! Message &nbsp;[name]&nbsp; ContactMessage Today 3:26 PM Your customer just responded! Campaign: The change Message: \"Stop\" Click here to Reply!"
       expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:text]&.strip).to eq expected_string
     end
   end
