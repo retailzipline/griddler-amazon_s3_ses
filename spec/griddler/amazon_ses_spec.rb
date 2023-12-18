@@ -75,6 +75,11 @@ describe Griddler::AmazonS3SES::Adapter do
       expected_string = "Hey User,You've received a response! Let's not leave the customer waiting for too long. Reach out to them ASAP! Message &nbsp;[name]&nbsp; ContactMessage Today 3:26 PM Your customer just responded! Campaign: The change Message: \"Stop\" Click here to Reply!"
       expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:text]&.strip).to eq expected_string
     end
+
+    it 'should fall back to recipients if To common header is not present' do
+      sns_message[:mail][:commonHeaders][:to] = nil
+      expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:to]).to eq ['hi@example.com']
+    end
   end
 
   let(:default_params) {

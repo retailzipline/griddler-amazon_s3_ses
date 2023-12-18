@@ -56,7 +56,7 @@ module Griddler
       end
 
       def recipients
-        email_json['mail']['commonHeaders']['to']
+        email_json['mail']['commonHeaders']['to'] || email_json["receipt"]["recipients"]
       end
 
       def sender
