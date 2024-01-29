@@ -81,7 +81,7 @@ module Griddler
 
       def message
         @message ||= begin
-          Mail.read_from_string(email_s3_object.get.body.string)
+          Mail.read_from_string(email_s3_object.get.body.string.scrub)
         end
       end
 
@@ -107,7 +107,7 @@ module Griddler
         # A frozen string errors out with the .force_encoding method.
         body_string = message_body.present? ? message_body.to_s : ""
 
-        body_string.force_encoding(Encoding::UTF_8).scrub
+        body_string.force_encoding(Encoding::UTF_8)
       end
 
       def raw_headers
