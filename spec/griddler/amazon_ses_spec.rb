@@ -32,6 +32,18 @@ describe Griddler::AmazonS3SES::Adapter do
       expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:to]).to eq ['"Mr Fugushima at Fugu, Inc" <hi@example.com>', 'Foo bar <foo@example.com>']
     end
 
+    it 'parses out the "recipients" addresses, returning an array' do
+      expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:recipients]).to eq ['hi@example.com']
+    end
+
+    it 'parses out the "to" addresses, fallin back to the "recipients" addresse' do
+      default_params['Message'] = JSON.parse(default_params['Message']).tap do
+        _1.dig('mail', 'commonHeaders').delete('to')
+      end.to_json
+
+      expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:to]).to eq ['hi@example.com']
+    end
+
     it 'parses out the "from" address, returning a string' do
       expect(Griddler::AmazonS3SES::Adapter.normalize_params(default_params)[:from]).to eq "Test There <there@example.com>"
     end

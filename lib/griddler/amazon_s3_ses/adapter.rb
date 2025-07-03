@@ -31,7 +31,8 @@ module Griddler
           return {} if email_json['mail']['commonHeaders'].blank? # some test SNS notifications are like this
 
           sns_json.merge(
-            to: recipients,
+            to: to,
+            recipients: recipients,
             from: sender,
             cc: cc,
             bcc: bcc,
@@ -55,8 +56,12 @@ module Griddler
         email_json['notificationType']
       end
 
-      def recipients
+      def to
         email_json['mail']['commonHeaders']['to'] || email_json["receipt"]["recipients"]
+      end
+
+      def recipients
+        email_json["receipt"]["recipients"]
       end
 
       def sender
