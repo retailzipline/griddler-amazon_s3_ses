@@ -17,7 +17,8 @@
 require 'base64'
 require 'json'
 require 'openssl'
-require 'httparty'
+require 'net/http'
+require 'uri'
 
 module AWS
   class MessageWasNotAuthenticError < StandardError
@@ -144,8 +145,7 @@ module AWS
       raise MessageWasNotAuthenticError, "cert is not hosted at AWS URL (https): #{url}" unless url =~ /^https.*amazonaws\.com\/.*$/i
       tries = 0
       begin
-        response = HTTParty.get url
-        response.body
+        Net::HTTP.get(URI.parse(url))
       rescue => msg
         tries += 1
         retry if tries <= 3
