@@ -1,4 +1,4 @@
 machine:
   ruby:
     version:
-      2.2.4
+      3.4.12
